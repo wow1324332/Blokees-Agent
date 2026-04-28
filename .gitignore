@@ -1,0 +1,3 @@
+node_modulesdistdist-ssr.local
+.env
+.env..env.*.local.DS_Store
