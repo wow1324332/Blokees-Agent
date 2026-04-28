@@ -4,9 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Blocky Agent Ultra</title>
+    
+    <!-- PWA: manifest.json 연결 -->
+    <link rel="manifest" href="/manifest.json" />
+    <!-- 모바일 주소창 테마 색상 설정 (선택사항이지만 앱의 완성도를 높여줍니다) -->
+    <meta name="theme-color" content="#020101" />
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+
+    <!-- PWA: 서비스 워커 등록 스크립트 -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('Service Worker registered!', reg))
+            .catch(err => console.log('Service Worker registration failed: ', err));
+        });
+      }
+    </script>
   </body>
 </html>
