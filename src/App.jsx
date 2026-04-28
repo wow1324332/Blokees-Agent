@@ -50,7 +50,7 @@ const globalStyles = `
     to { transform: translateY(-100vh) scale(2); opacity: 0; }
   }
 
-  /* --- 신규: 극강의 역동적 인트로용 애니메이션 --- */
+  /* --- 극강의 역동적 인트로용 애니메이션 --- */
   @keyframes cinematic-intro-extreme {
     0% { transform: scale(0); opacity: 0; filter: blur(30px); }
     30% { transform: scale(1.2); opacity: 1; filter: blur(0px); }
@@ -102,6 +102,42 @@ const globalStyles = `
     6% { transform: translate(0); opacity: 1; filter: none; }
   }
 
+  /* --- 신규: 대항해시대 고풍스러운 양피지 타오르는 애니메이션 (리마스터) --- */
+  @keyframes parchment-spin {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+  @keyframes parchment-spin-reverse {
+    from { transform: translate(-50%, -50%) rotate(360deg); }
+    to { transform: translate(-50%, -50%) rotate(0deg); }
+  }
+  @keyframes burn-flicker {
+    0% { opacity: 0.7; filter: drop-shadow(0 0 15px rgba(255,69,0,0.6)) brightness(0.9); }
+    100% { opacity: 1; filter: drop-shadow(0 0 35px rgba(255,107,0,1)) brightness(1.2); }
+  }
+  @keyframes ember-rise {
+    0% { transform: translate(0, 0) scale(1.5); opacity: 1; }
+    50% { opacity: 0.8; transform: translate(10px, -60px) scale(1); }
+    100% { transform: translate(-10px, -150px) scale(0.2); opacity: 0; }
+  }
+
+  /* --- 캔버스 환경을 위한 보완 애니메이션 (tailwindcss-animate 대체용) --- */
+  @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes zoom-in-90 { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+  @keyframes zoom-in-95 { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+  @keyframes slide-in-right { from { opacity: 0; transform: translateX(2rem); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes pop-in { 0% { opacity: 0; transform: scale(0.5); } 100% { opacity: 1; transform: scale(1); } }
+  @keyframes shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-5px); } 40% { transform: translateX(5px); } 60% { transform: translateX(-5px); } 80% { transform: translateX(5px); } }
+  @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
+  .animate-fade-in-500 { animation: fade-in 0.5s ease-out forwards; }
+  .animate-fade-in-700 { animation: fade-in 0.7s ease-out forwards; }
+  .animate-zoom-in-90-500 { animation: zoom-in-90 0.5s ease-out forwards; }
+  .animate-zoom-in-95-1000 { animation: zoom-in-95 1s ease-out forwards; }
+  .animate-slide-in-right-500 { animation: slide-in-right 0.5s ease-out forwards; }
+  .shake-effect { animation: shake 0.5s ease-in-out; }
+  .group:hover .shimmer-effect { animation: shimmer 2s infinite; }
+
   /* 유틸리티 클래스 */
   .font-cinzel { font-family: 'Cinzel', serif; }
   
@@ -152,6 +188,32 @@ const globalStyles = `
 
   .hide-scrollbar::-webkit-scrollbar { display: none; }
   .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* --- 신규: 불타는 밧줄 느낌의 커스텀 스크롤바 --- */
+  .flaming-rope-scroll::-webkit-scrollbar {
+    width: 14px;
+  }
+  .flaming-rope-scroll::-webkit-scrollbar-track {
+    background: repeating-linear-gradient(
+      -45deg,
+      #2a0c03,
+      #2a0c03 6px,
+      #1a0802 6px,
+      #1a0802 12px
+    );
+    border-radius: 7px;
+    border: 1px solid #000;
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.9);
+  }
+  .flaming-rope-scroll::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #ffea00 0%, #ff6b00 40%, #8b0000 100%);
+    border-radius: 7px;
+    box-shadow: 0 0 10px #ff6b00, inset 0 0 6px rgba(255,255,255,0.5);
+    border: 1px solid #ffcc00;
+  }
+  .flaming-rope-scroll::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #ffffff 0%, #ffea00 30%, #ff6b00 100%);
+  }
 `;
 
 // --- 백그라운드 파티클 컴포넌트 ---
@@ -184,9 +246,9 @@ const PremiumModal = ({ isOpen, type, message, highlight, onClose }) => {
 
   return (
     <div className="absolute inset-0 z-[100] flex items-center justify-center px-6">
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-md animate-in fade-in duration-500" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-md animate-fade-in-500" onClick={onClose} />
       
-      <div className="relative w-full max-w-sm glass-panel p-8 animate-in zoom-in-[0.9] fade-in duration-500 flex flex-col items-center">
+      <div className="relative w-full max-w-sm glass-panel p-8 animate-zoom-in-90-500 flex flex-col items-center">
         <div className="glass-reflection" />
         
         {/* 모달 헤더 아이콘 */}
@@ -331,11 +393,10 @@ const Login = ({ onSuccess }) => {
     setPin(prev => prev + k);
   };
 
-  // --- 수정된 키 배열: 1부터 9까지만 존재 ---
   const keys = ['1','2','3','4','5','6','7','8','9'];
 
   return (
-    <div className="relative flex flex-col h-full px-6 pt-20 pb-10 animate-in fade-in zoom-in-[0.95] duration-1000 z-10">
+    <div className="relative flex flex-col h-full px-6 pt-20 pb-10 animate-zoom-in-95-1000 z-10">
       <AmbientBackground />
 
       <div className="flex-1 flex flex-col items-center justify-center z-10" style={{ animation: 'float-smooth 6s ease-in-out infinite' }}>
@@ -345,7 +406,7 @@ const Login = ({ onSuccess }) => {
         
         <h2 className="text-[11px] tracking-[0.5em] text-orange-200/80 mb-12 font-medium">SYSTEM AUTHORIZATION</h2>
 
-        <div className={`flex gap-6 mb-8 ${isError ? 'animate-[shake_0.5s_ease-in-out]' : ''}`}>
+        <div className={`flex gap-6 mb-8 ${isError ? 'shake-effect' : ''}`}>
           {[0, 1, 2, 3].map(i => (
             <div key={i} className="relative w-4 h-4">
               <div className="absolute inset-0 rounded-full bg-white/5 border border-orange-500/30" />
@@ -380,15 +441,20 @@ const Login = ({ onSuccess }) => {
 
 
 // --- 모듈 화면: 홈 베이스 (글래스 카드 UI) ---
-const Home = ({ onSelectModule }) => {
+const Home = ({ onSelectModule, onLogout }) => {
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
   return (
-    <div className="relative flex flex-col h-full animate-in fade-in duration-700 z-10">
+    <div className="relative flex flex-col h-full animate-fade-in-700 z-10">
       <AmbientBackground />
       
       {/* 럭셔리 헤더 */}
       <header className="flex items-center justify-between px-8 py-8 z-10 relative">
         <div className="flex items-center gap-5">
-          <div className="w-12 h-12 rounded-2xl glass-panel flex items-center justify-center relative overflow-hidden">
+          <div 
+            className="w-12 h-12 rounded-2xl glass-panel flex items-center justify-center relative overflow-hidden cursor-pointer"
+            onClick={() => setShowLogoutModal(true)}
+          >
              <div className="absolute inset-0 bg-gradient-to-br from-orange-400/20 to-transparent" />
              <div className="w-5 h-5 rounded-full bg-orange-500 shadow-[0_0_15px_#ff6b00]" />
           </div>
@@ -402,9 +468,7 @@ const Home = ({ onSelectModule }) => {
         </button>
       </header>
 
-      <div className="flex-1 px-6 pb-8 overflow-y-auto hide-scrollbar z-10">
-        <h2 className="text-2xl font-light tracking-wide text-white mb-8 px-2 font-cinzel">System Modules</h2>
-
+      <div className="flex-1 px-6 pb-8 overflow-y-auto hide-scrollbar z-10 pt-2">
         <div className="space-y-6">
           {/* 활성화된 모듈 (번호 추첨) */}
           <div
@@ -414,17 +478,18 @@ const Home = ({ onSelectModule }) => {
             <div className="glass-reflection" />
             <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-r from-orange-500/0 via-orange-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             
-            <div className="absolute right-6 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10 group-hover:bg-orange-500/20 group-hover:border-orange-500/50 transition-all">
-               <svg className="w-5 h-5 text-orange-400 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-            </div>
-
             <div className="flex items-center gap-6 relative z-10">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500/20 to-black/50 border border-orange-500/30 flex items-center justify-center shadow-[inset_0_0_20px_rgba(255,107,0,0.2)]">
-                <svg className="w-8 h-8 text-orange-500 drop-shadow-[0_0_8px_rgba(255,107,0,0.8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" /></svg>
+                {/* 하이테크 퀀텀 코어 아이콘 */}
+                <svg className="w-9 h-9 text-orange-500 drop-shadow-[0_0_12px_rgba(255,107,0,1)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 4v16m8-8H4m13.657-5.657l-11.314 11.314m0-11.314l11.314 11.314" />
+                  <circle cx="12" cy="12" r="8" strokeWidth={1.2} strokeDasharray="4 4" />
+                  <circle cx="12" cy="12" r="3" strokeWidth={2} />
+                </svg>
               </div>
-              <div>
-                <h3 className="text-lg font-medium text-white tracking-wide mb-1">번호 추첨 모듈</h3>
-                <p className="text-xs text-orange-200/50 tracking-widest uppercase">Random Draw Protocol</p>
+              <div className="flex flex-col justify-center mt-1">
+                <h3 className="text-[17px] font-cinzel font-bold text-white tracking-[0.15em] mb-1.5 drop-shadow-md">QUANTUM DRAW</h3>
+                <p className="text-[10px] text-orange-300/60 tracking-[0.25em] font-light uppercase">Randomize Protocol</p>
               </div>
             </div>
           </div>
@@ -434,32 +499,87 @@ const Home = ({ onSelectModule }) => {
             <div key={i} className="relative glass-panel p-6 opacity-40 select-none border-white/5">
               <div className="flex items-center gap-6">
                 <div className="w-16 h-16 rounded-2xl bg-black/40 border border-white/10 flex items-center justify-center">
-                  <svg className="w-8 h-8 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                  <svg className="w-7 h-7 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
                 </div>
-                <div>
-                  <h3 className="text-lg font-medium text-white/70 tracking-wide mb-1">접근 불가 모듈</h3>
-                  <p className="text-xs text-white/40 tracking-widest uppercase">Restricted Area</p>
+                <div className="flex flex-col justify-center mt-1">
+                  <h3 className="text-[16px] font-cinzel font-bold text-white/70 tracking-[0.15em] mb-1.5">LOCKED SECTOR</h3>
+                  <p className="text-[10px] text-white/40 tracking-[0.25em] font-light uppercase">Access Denied</p>
                 </div>
               </div>
             </div>
           ))}
         </div>
       </div>
+
+      {/* 로그아웃 확인 모달 */}
+      {showLogoutModal && (
+        <div className="absolute inset-0 z-[100] flex items-center justify-center px-6">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-md animate-fade-in-500" onClick={() => setShowLogoutModal(false)} />
+          
+          <div className="relative w-full max-w-sm glass-panel p-8 animate-zoom-in-90-500 flex flex-col items-center z-10">
+            <div className="glass-reflection" />
+            
+            {/* 모달 헤더 아이콘 */}
+            <div className="w-16 h-16 rounded-full glass-panel flex items-center justify-center mb-6 relative">
+              <div className="absolute inset-0 rounded-full animate-ping opacity-20 bg-orange-500" />
+              <svg className="w-8 h-8 text-orange-400 drop-shadow-[0_0_10px_rgba(255,107,0,0.8)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+            </div>
+
+            <h3 className="text-sm tracking-[0.3em] font-light text-orange-200/80 mb-2">
+              SYSTEM ALERT
+            </h3>
+            
+            <p className="text-center text-white/90 text-[15px] font-medium leading-relaxed mb-8">
+              시스템에서 로그아웃 하시겠습니까?
+            </p>
+
+            <div className="flex gap-4 w-full">
+              <button
+                onClick={() => setShowLogoutModal(false)}
+                className="glass-button flex-1 py-4 text-white/50 tracking-widest text-sm font-semibold hover:text-white"
+              >
+                NO
+              </button>
+              <button
+                onClick={onLogout}
+                className="glass-button flex-1 py-4 text-orange-100 tracking-widest text-sm font-semibold shadow-[0_0_15px_rgba(255,107,0,0.3)]"
+              >
+                YES
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 
-// --- 모듈 화면: 번호 추첨 (고급 슬롯머신) ---
+// --- 모듈 화면: 번호 추첨 (고급 슬롯머신 및 옛날 다이얼 키패드 결합) ---
 const NumberDraw = ({ onBack }) => {
   const [participants, setParticipants] = useState('');
   const [spinSeq, setSpinSeq] = useState([0]);
   const [isSpinning, setIsSpinning] = useState(false);
   const [offset, setOffset] = useState(0);
 
+  const [showDial, setShowDial] = useState(false);
+  const [hasDrawn, setHasDrawn] = useState(false);
+  
+  // 연속 추첨 기능 상태
+  const [isContinuous, setIsContinuous] = useState(false);
+  const [drawnNumbers, setDrawnNumbers] = useState([]);
+  
   const [modal, setModal] = useState({ isOpen: false, type: '', message: '', highlight: '' });
 
   const ITEM_HEIGHT = 144; // 9rem (h-36)
+
+  // 값 초기화 (참가자 수 변경 시 초기화 됨)
+  useEffect(() => {
+    setDrawnNumbers([]);
+    setHasDrawn(false);
+  }, [participants]);
 
   // 완벽한 난수 생성 (Web Crypto API)
   const getSecureRandom = (max) => {
@@ -472,15 +592,30 @@ const NumberDraw = ({ onBack }) => {
   const handleDraw = () => {
     const max = parseInt(participants, 10);
     if (isNaN(max) || max < 1) {
-      setModal({ isOpen: true, type: 'ERROR', message: '대상자의 수를 정확한 숫자로 입력해주십시오.' });
+      setModal({ isOpen: true, type: 'ERROR', message: <>Invalid input detected.<br />Please enter a valid number.</> });
       return;
     }
     if (max > 999999) {
-      setModal({ isOpen: true, type: 'ERROR', message: '시스템 허용 범위를 초과하였습니다.' });
+      setModal({ isOpen: true, type: 'ERROR', message: <>System capacity exceeded.<br />Please enter a smaller number.</> });
       return;
     }
 
-    const target = getSecureRandom(max);
+    if (isContinuous && drawnNumbers.length >= max) {
+      setModal({ isOpen: true, type: 'ERROR', message: <>All available numbers drawn.<br />Please re-initialize the system.</> });
+      return;
+    }
+
+    let target = getSecureRandom(max);
+
+    // 연속 추첨 중복 방지 로직 (최대 시도 횟수 제한으로 무한루프 방지)
+    if (isContinuous) {
+      let attempts = 0;
+      while (drawnNumbers.includes(target) && attempts < max * 5) {
+        target = getSecureRandom(max);
+        attempts++;
+      }
+    }
+
     const spins = 45; // 회전 수 증가로 더 극적인 효과
     const seq = [];
 
@@ -489,28 +624,36 @@ const NumberDraw = ({ onBack }) => {
     }
     seq.push(target);
 
-    setSpinSeq(seq);
+    // 재추첨 시 즉시 초기 위치로 스냅백 처리
+    setIsSpinning(false);
     setOffset(0);
-    setIsSpinning(true);
 
     setTimeout(() => {
+       setSpinSeq(seq);
+       setIsSpinning(true);
        setOffset((spins - 1) * ITEM_HEIGHT);
     }, 50);
 
     // 5초간 회전 (cubic-bezier로 현실적인 감속 구현)
     setTimeout(() => {
        setIsSpinning(false);
+       setHasDrawn(true);
+       
+       if (isContinuous) {
+           setDrawnNumbers(prev => [...prev, target]);
+       }
+
        setModal({ 
          isOpen: true, 
          type: 'SUCCESS', 
-         message: '추첨이 완료되었습니다. 결과를 확인하십시오.', 
+         message: <>Draw sequence completed.<br />Please verify your result.</>, 
          highlight: target.toString() 
        });
     }, 5050);
   };
 
   return (
-    <div className="relative flex flex-col h-full animate-in slide-in-from-right-8 duration-500 z-10">
+    <div className="relative flex flex-col h-full animate-slide-in-right-500 z-10">
        <AmbientBackground />
        
        <header className="flex items-center p-6 z-10 relative">
@@ -520,27 +663,57 @@ const NumberDraw = ({ onBack }) => {
          <h1 className="flex-1 text-center text-xs tracking-[0.4em] text-white font-light mr-12 uppercase">Draw Protocol</h1>
        </header>
 
-       <div className="flex-1 flex flex-col px-6 pb-10 overflow-hidden z-10">
+       {/* 화면 오버플로우 수정: 스크롤을 유지하되 스크롤바는 숨김 */}
+       <div className="flex-1 flex flex-col px-6 pb-10 overflow-y-auto hide-scrollbar z-10">
          
-         {/* 입력 필드 영역 */}
-         <div className="mb-8 mt-2">
-           <label className="block text-[11px] font-medium tracking-[0.2em] text-orange-200/80 mb-4 text-center uppercase">Total Participants</label>
-           <div className="relative glass-panel p-2 focus-within:border-orange-500/60 focus-within:shadow-[0_0_30px_rgba(255,107,0,0.2)] transition-all duration-500 rounded-full">
+         {/* 입력 필드 영역 (외곽 삐져나옴 방지 적용 및 연속 추첨 기능 추가) */}
+         <div className="mb-6 mt-2 flex flex-col items-center">
+           <label className="block text-[11px] font-medium tracking-[0.2em] text-orange-200/80 mb-3 text-center uppercase">Total Participants</label>
+           <div 
+             onClick={() => !isSpinning && setShowDial(true)}
+             className="relative glass-panel p-1 mx-auto w-40 overflow-hidden focus-within:border-orange-500/60 focus-within:shadow-[0_0_30px_rgba(255,107,0,0.2)] transition-all duration-500 rounded-full cursor-pointer group"
+           >
              <div className="glass-reflection rounded-full" />
              <input
-               type="number"
+               type="text"
                value={participants}
-               onChange={(e) => setParticipants(e.target.value)}
+               readOnly
                disabled={isSpinning}
-               className="w-full bg-transparent text-center text-3xl font-cinzel text-white outline-none placeholder-white/20 disabled:opacity-50 py-4 relative z-10"
-               placeholder="Enter Number"
-               inputMode="numeric"
+               className="w-full bg-transparent text-center text-xl font-cinzel text-white outline-none placeholder-white/20 disabled:opacity-50 py-2 relative z-10 cursor-pointer pointer-events-none"
+               placeholder="NUM"
              />
+             {/* 입력 지우기 버튼 */}
+             {participants && !isSpinning && (
+               <button 
+                 onClick={(e) => { e.stopPropagation(); setParticipants(''); setHasDrawn(false); setDrawnNumbers([]); }}
+                 className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-6 h-6 rounded-full flex items-center justify-center text-white/30 hover:text-orange-400 hover:bg-white/10 transition-colors"
+               >
+                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+               </button>
+             )}
            </div>
+
+           {/* 심플한 라디오 버튼 스타일 체크박스 UI */}
+           <label className="mt-5 flex items-center gap-3 cursor-pointer group">
+             <div className="relative w-5 h-5 rounded-full border-2 border-orange-500/40 bg-black/50 flex items-center justify-center group-hover:border-orange-500/80 transition-colors">
+               <input
+                 type="checkbox"
+                 checked={isContinuous}
+                 onChange={(e) => {
+                   setIsContinuous(e.target.checked);
+                   if (!e.target.checked) setDrawnNumbers([]);
+                 }}
+                 disabled={isSpinning}
+                 className="absolute opacity-0 cursor-pointer w-0 h-0"
+               />
+               <div className={`w-2.5 h-2.5 rounded-full bg-orange-500 transition-all duration-300 ${isContinuous ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`} />
+             </div>
+             <span className="text-[11px] tracking-[0.2em] text-orange-200/60 group-hover:text-orange-200/90 transition-colors uppercase font-cinzel font-bold mt-0.5">CONTINUOUS DRAW</span>
+           </label>
          </div>
 
          {/* 3D 슬롯머신 실린더 UI */}
-         <div className="flex-1 flex flex-col items-center justify-center relative mb-10 w-full">
+         <div className="flex-1 flex flex-col items-center justify-center relative w-full mb-8 min-h-[220px]">
             
             <div className="relative w-full h-[220px] rounded-[3rem] slot-cylinder border-2 border-[#3a1505] overflow-hidden flex items-center justify-center shadow-2xl">
                
@@ -548,9 +721,75 @@ const NumberDraw = ({ onBack }) => {
                <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-black/60 pointer-events-none z-20 rounded-[3rem]" />
                <div className="absolute top-0 left-[10%] right-[10%] h-[30%] bg-gradient-to-b from-white/15 to-transparent rounded-full blur-md pointer-events-none z-20" />
 
-               {/* 중앙 조준선 */}
-               <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-[2px] bg-orange-500/80 shadow-[0_0_20px_#ff6b00] z-20 opacity-80" />
-               <div className="absolute top-1/2 -translate-y-1/2 left-4 right-4 h-16 border-y border-orange-500/30 z-20 pointer-events-none" />
+               {/* 고풍스러운 황금 대항해시대 양피지 & 화염 UI (하이퀄리티 리마스터) */}
+               
+               {/* 화염 이펙트를 위한 보이지 않는 SVG 필터 */}
+               <svg width="0" height="0" className="absolute pointer-events-none">
+                 <filter id="cinematic-fire">
+                   <feTurbulence type="fractalNoise" baseFrequency="0.015 0.03" numOctaves="3" result="noise">
+                     <animate attributeName="baseFrequency" values="0.015 0.03; 0.02 0.06; 0.015 0.03" dur="2s" repeatCount="indefinite" />
+                   </feTurbulence>
+                   <feDisplacementMap in="SourceGraphic" in2="noise" scale="20" xChannelSelector="R" yChannelSelector="G" />
+                 </filter>
+               </svg>
+
+               {/* 베이스 세피아/황금빛 양피지 질감 */}
+               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(200,140,80,0.25)_0%,_rgba(60,20,0,0.95)_100%)] z-10 pointer-events-none mix-blend-overlay" />
+               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjMDAwIiBmaWxsLW9wYWNpdHk9IjAuMDUiLz4KPC9zdmc+')] opacity-40 z-10 pointer-events-none mix-blend-multiply" />
+
+               {/* 화염 가장자리 (SVG 필터 적용) */}
+               <div className="absolute inset-[-10px] rounded-[3.5rem] border-[15px] border-[#ff3300]/80 z-10 pointer-events-none opacity-80" style={{ filter: 'url(#cinematic-fire)', animation: 'burn-flicker 1.5s infinite alternate' }} />
+               <div className="absolute inset-0 rounded-[3rem] shadow-[inset_0_0_60px_rgba(255,50,0,0.9),inset_0_0_120px_rgba(200,80,0,0.4)] z-10 pointer-events-none" style={{ animation: 'burn-flicker 2s infinite alternate-reverse' }} />
+
+               {/* 회전하는 하이퀄리티 고대 마법진 */}
+               <div className="absolute top-1/2 left-1/2 w-[190px] h-[190px] -translate-x-1/2 -translate-y-1/2 z-10 pointer-events-none opacity-90 drop-shadow-[0_0_15px_rgba(255,150,0,0.5)]" style={{ animation: 'parchment-spin 25s linear infinite' }}>
+                   {/* 외부 룬 문자 링 */}
+                   <div className="absolute inset-0 border-[1.5px] border-dotted border-[#ffb700]/60 rounded-full" />
+                   <div className="absolute inset-2 border-[1px] border-[#ff8c00]/50 rounded-full" />
+                   <div className="absolute inset-6 border-[2px] border-dashed border-[#ff4500]/40 rounded-full" />
+                   
+                   {/* 고퀄리티 마법진 SVG */}
+                   <svg className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140px] h-[140px] text-[#ffaa00]/60" viewBox="0 0 200 200" fill="none" stroke="currentColor">
+                       {/* 다중 육망성 및 트라이앵글 */}
+                       <polygon points="100,20 169.28,140 30.72,140" strokeWidth="1.5" />
+                       <polygon points="100,180 30.72,60 169.28,60" strokeWidth="1.5" />
+                       <polygon points="100,40 151.96,130 48.04,130" strokeWidth="1" opacity="0.5" />
+                       <polygon points="100,160 48.04,70 151.96,70" strokeWidth="1" opacity="0.5" />
+                       
+                       {/* 내부 및 외부 서클 */}
+                       <circle cx="100" cy="100" r="80" strokeWidth="1.5" />
+                       <circle cx="100" cy="100" r="60" strokeWidth="1" strokeDasharray="5 5" />
+                       <circle cx="100" cy="100" r="35" strokeWidth="1.5" />
+                       
+                       {/* 기하학적 교차선 */}
+                       <path d="M100 20 L100 180 M20 100 L180 100 M43.4 43.4 L156.6 156.6 M43.4 156.6 L156.6 43.4" strokeWidth="0.5" opacity="0.5" />
+                       <circle cx="100" cy="100" r="10" fill="rgba(255,107,0,0.3)" strokeWidth="1" />
+                   </svg>
+               </div>
+
+               {/* 역회전 내부 링 */}
+               <div className="absolute top-1/2 left-1/2 w-[110px] h-[110px] -translate-x-1/2 -translate-y-1/2 z-10 pointer-events-none opacity-80" style={{ animation: 'parchment-spin-reverse 15s linear infinite' }}>
+                 <div className="absolute inset-0 border-[2px] border-[#ff3300]/60 rounded-full border-t-transparent border-b-transparent" />
+                 <div className="absolute inset-1 border-[1px] border-[#ffcc00]/40 rounded-full border-l-transparent border-r-transparent" />
+               </div>
+
+               {/* 극강의 불티 (Embers) 파티클 - 더욱 역동적으로 */}
+               {[...Array(20)].map((_, i) => (
+                 <div 
+                   key={`ember-${i}`} 
+                   className="absolute rounded-full bg-[#ffcc00] z-10 pointer-events-none mix-blend-screen"
+                   style={{
+                     width: `${Math.random() * 3 + 1}px`,
+                     height: `${Math.random() * 3 + 1}px`,
+                     left: `${Math.random() * 100}%`,
+                     bottom: `${Math.random() * 20 - 10}%`,
+                     animation: `ember-rise ${1 + Math.random() * 2}s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite`,
+                     animationDelay: `${Math.random() * 3}s`,
+                     boxShadow: '0 0 10px 2px #ff4500',
+                     filter: 'blur(0.5px)'
+                   }}
+                 />
+               ))}
                
                {/* 슬롯 릴 */}
                <div className="w-full h-36 relative flex justify-center">
@@ -575,8 +814,35 @@ const NumberDraw = ({ onBack }) => {
 
          </div>
 
+         {/* 누적된 추첨 번호 목록 (시네마틱 다이아몬드 타일 테마) */}
+         {isContinuous && drawnNumbers.length > 0 && (
+           <div className="w-full mt-4 mb-6 relative glass-panel p-5 z-20 flex flex-col items-center border border-[#ff6b00]/20 shadow-[0_10px_30px_rgba(0,0,0,0.8),inset_0_0_20px_rgba(255,107,0,0.1)]">
+             <div className="glass-reflection" />
+             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-[1px] bg-gradient-to-r from-transparent via-orange-400 to-transparent shadow-[0_0_10px_#ff6b00]" />
+             
+             <h4 className="text-[10px] font-cinzel tracking-[0.4em] text-orange-200/70 mb-6 uppercase drop-shadow-md">
+               Acquired Relics
+             </h4>
+             
+             <div className="flex flex-wrap gap-5 justify-center w-full px-2 pb-2">
+               {drawnNumbers.map((num, idx) => (
+                 <div key={idx} className="relative w-12 h-12 flex items-center justify-center animate-pop-in group">
+                   {/* 회전하는 다이아몬드 배경 */}
+                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(255,107,0,0.3)_0%,_rgba(20,5,0,0.9)_100%)] rounded-[4px] border border-orange-500/40 transform rotate-45 group-hover:rotate-90 group-hover:bg-orange-500/20 transition-all duration-500 shadow-[0_0_15px_rgba(255,107,0,0.2)]" />
+                   <div className="absolute inset-1 border border-orange-200/10 rounded-[2px] transform rotate-45 pointer-events-none" />
+                   
+                   {/* 당첨 번호 */}
+                   <span className="relative z-10 text-orange-100 font-cinzel text-xl drop-shadow-[0_0_10px_rgba(255,107,0,1)] font-bold group-hover:scale-110 transition-transform">
+                     {num}
+                   </span>
+                 </div>
+               ))}
+             </div>
+           </div>
+         )}
+
          {/* 메인 실행 버튼 */}
-         <div className="mt-auto">
+         <div className="mt-auto pt-4">
            <button 
              onClick={handleDraw} 
              disabled={isSpinning || !participants}
@@ -585,13 +851,65 @@ const NumberDraw = ({ onBack }) => {
                  ? 'bg-black/50 border border-white/10 text-white/30 cursor-not-allowed' 
                  : 'glass-button text-white shadow-[0_0_40px_rgba(255,107,0,0.3)]'}`}
            >
-             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite]" />
+             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full shimmer-effect" />
              <span className="relative z-10 drop-shadow-md">
-               {isSpinning ? 'PROCESSING...' : 'INITIALIZE'}
+               {isSpinning ? 'PROCESSING...' : (hasDrawn ? 'RE-INITIALIZE' : 'INITIALIZE')}
              </span>
            </button>
          </div>
        </div>
+
+       {/* 원형 다이얼 키패드 (오버레이) */}
+       {showDial && (
+         <div className="absolute inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md animate-fade-in-500">
+           {/* 배경 우주적 링 애니메이션 */}
+           <div className="absolute w-[280px] h-[280px] border border-orange-500/20 rounded-full animate-[ring-spin-fast_15s_linear_infinite]" />
+           <div className="absolute w-[300px] h-[300px] border border-white/5 rounded-full animate-[ring-spin-reverse-fast_20s_linear_infinite]" />
+
+           <div className="relative w-72 h-72 flex items-center justify-center" style={{ animation: 'pop-in 0.5s cubic-bezier(0.16,1,0.3,1) forwards' }}>
+             
+             {/* 중앙 ENTER 버튼 */}
+             <button
+               onClick={() => setShowDial(false)}
+               className="w-[72px] h-[72px] rounded-full glass-button flex items-center justify-center z-10 text-orange-200 font-cinzel text-[10px] tracking-[0.2em] shadow-[0_0_30px_rgba(255,107,0,0.5)] hover:shadow-[0_0_50px_rgba(255,107,0,0.8)] transition-all"
+             >
+               ENTER
+             </button>
+
+             {/* 옛날 전화기 스타일 10개 숫자 다이얼 배치 */}
+             {['1','2','3','4','5','6','7','8','9','0'].map((num, i) => {
+               // 0번 위치를 맨 위로(-90도) 시작하여 원형으로 배치 (10개이므로 36도 간격)
+               const angle = (i * 36) - 90;
+               return (
+                 <div
+                   key={num}
+                   className="absolute top-1/2 left-1/2 w-12 h-12 -ml-6 -mt-6"
+                   // CSS transform을 통해 원형 위치에 배치하되, 텍스트가 거꾸로 뒤집히지 않도록 이중 rotate 적용
+                   style={{ transform: `rotate(${angle}deg) translate(110px) rotate(${-angle}deg)` }}
+                 >
+                   <button
+                     onClick={(e) => {
+                       e.stopPropagation();
+                       // 최대 6자리 수 제한으로 UI 깨짐 및 시스템 오류 방지
+                       if (participants.length < 6) {
+                         setParticipants(prev => prev + num);
+                         setHasDrawn(false);
+                         setDrawnNumbers([]); // 새로운 번호 입력시 연속 추첨 풀 초기화
+                       }
+                     }}
+                     className="w-full h-full rounded-full glass-panel flex items-center justify-center text-lg font-light text-white hover:bg-orange-500/30 hover:text-orange-200 active:scale-90 transition-all duration-300 opacity-0 shadow-[0_0_15px_rgba(0,0,0,0.8)]"
+                     style={{
+                       animation: `pop-in 0.4s cubic-bezier(0.16,1,0.3,1) forwards ${i * 0.04}s`
+                     }}
+                   >
+                     {num}
+                   </button>
+                 </div>
+               );
+             })}
+           </div>
+         </div>
+       )}
 
        <PremiumModal
          isOpen={modal.isOpen}
@@ -624,7 +942,7 @@ export default function App() {
 
           {view === 'INTRO' && <Intro onComplete={() => setView('LOGIN')} />}
           {view === 'LOGIN' && <Login onSuccess={() => setView('HOME')} />}
-          {view === 'HOME' && <Home onSelectModule={() => setView('DRAW')} />}
+          {view === 'HOME' && <Home onSelectModule={() => setView('DRAW')} onLogout={() => setView('INTRO')} />}
           {view === 'DRAW' && <NumberDraw onBack={() => setView('HOME')} />}
           
         </div>
